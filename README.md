@@ -45,22 +45,22 @@ Takes an item ID, confirm the deletion, and then does it. Notice that the ID of 
 
 I tried to do this as simple as possible. This program uses a 'database', which is simply a directory somewhere on your system. It defaults to `$HOME/.todo` if neither `TODO_DB` or `XDG_DATA_DIR` variables are set in the environment. A todo item is a subdirectory of the database that contains files associated with it, such as its title and whether or not it's marked as done. In order to easily reference items when issuing commands like `delete` or `toggle`, each item is given an ID when it's created. IDs are tracked using the 'id' file in the database directory. This ID is also the name of the todo item's directory.
 
-A tree command is worth a thousand words. Example:
+A tree command is worth a thousand words. Here's a complete usage example:
 ```
+$ rm -fr $YOUR_TODO_DB_PATH
 $ todo a 'Do hot yoga'
-42
-$ todo a "Change time to match Moscow's"
-43
+1
+$ todo a "Change time to match Moscow's" 1>/dev/null
 $ echo 127 > $YOUR_TODO_DB_PATH/id
 $ todo a 'Buy bus tickets to Burning Man'
 128
-$ todo t 42
+$ todo t 1
 $ tree $YOUR_TODO_DB_PATH
 /YOUR/TODO/DB/PATH
-├── 42
+├── 1
 │   ├── done
 │   └── title
-├── 43
+├── 2
 │   └── title
 ├── 128
 │   └── title
