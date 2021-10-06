@@ -1,16 +1,12 @@
 #!/bin/sh
 
-# This script uses files stored in a 'database' (a simple directory). Each file
-# represents a todo item. The content of each file is data associated with the
-# todo item (for instance the state of the item, a deadline, etc).
+# This script uses a 'database', which is a simple directory containing the
+# todo items. A todo item is a subdirectory of the database that contains files
+# associated with it, like its title and whether or it is done.
 #
-# The filename of a todo item is irrelevant, the only requirement is that it
-# must be unique amongst all other files in the database. This means the title
-# of the task is stored in the file, easily dealing with titles containing
-# spaces and basically any unicode code point.
-#
-# The contents of each item is as follows:
-# <name>
+# In order to easily reference items when issuing commands like `delete' or
+# `toggle', each item is given an ID. IDs are tracked using the `id' file in
+# database directory. This ID is also the name of the todo item's directory.
 
 # By order of priority, the path to the database is set to $TODO_DB, then to a
 # subdir of $XDG_DATA_HOME, or if neither of these vars are set, $HOME/.todo
@@ -21,6 +17,8 @@ elif [ $XDG_DATA_HOME ]; then
 else
   db="$HOME/.todo"
 fi
+
+# As explained in the top-level comment, this file tracks IDs for the items.
 idfile="$db/id"
 
 # If they do not exist, create the database directory and the ID file.
@@ -36,6 +34,7 @@ get_new_id() {
   return $new_id
 }
 
+# Main function for listing todo items. Takes no arguments for now.
 go_ls() {
   for item in $(ls "$db"); do
     item_path="$db/$item"
@@ -52,6 +51,9 @@ go_ls() {
   done
 }
 
+# Main function for adding a new todo item. Takes a single argument, the title
+# of the item to create. It does not matter if another item with the same name
+# already exists in the database.
 go_add() {
   item_name="$1"
   if [ -z "$item_name" ]; then
@@ -66,6 +68,9 @@ go_add() {
   echo $item_id
 }
 
+# Toggle the state (`to do' or `done') of an item by removing or creating a
+# flag file named `done' in the item's directory. Takes a single argument, the
+# ID of the item to toggle.
 go_toggle() {
   item_id=$1
   if [ -z $item_id ]; then
@@ -84,6 +89,8 @@ go_toggle() {
   fi
 }
 
+# Deletes, after user confirmation, a given todo item. Takes a single argument,
+# the ID of the item to remove.
 go_delete() {
   item_id=$1
   if [ -z $item_id ]; then
