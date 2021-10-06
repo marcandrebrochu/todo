@@ -2,7 +2,7 @@ This repository contains a simple shell script for dealing with todo items direc
 
 ## Usage
 
-After linking or copying or whatever you want the script somewhere that is accessible from your `$PATH`, you can start using it as such.
+After linking or copying or whatever you want the script somewhere that is accessible from your `$PATH`, you can start using the utility. There's no install script yet.
 
 ### Adding a new item
 ```
@@ -14,12 +14,7 @@ $ todo a 'Dance with the Devil'
 
 As you can see, this invocation prints on standard output the ID of the item you just created. This is explained in more details in the next section. **Note that the script only reads the first letter of each command (`add`, `toggle`, etc.)**
 
-```
-$ todo a 'Cook the spaghetti'
-```
-
 ### Marking an item as done
-
 ```
 $ todo toggle 1
 ```
@@ -27,7 +22,6 @@ $ todo toggle 1
 This command can also unmark an item (if for example it wasn't done after all), as its name implies. It takes an ID as a parameter, *not* the item's title as given in the previous section. This is because each todo item is given an ID when it is created, which is the output of the `add` command. This makes it easier to reference an item, and was a necessary thing to do because each invocation of this script is without memory of what happened in older invocations. More details on that in the next section about structure.
 
 ### Listing items
-
 ```
 $ todo
 1X       Cook the spaghetti
@@ -37,7 +31,6 @@ $ todo
 This is the default behavior of the script if you don't give it any argument, or if you give it garbage. As you can see, it outputs the title of the task, together with its ID and its state. The state is either a simple dot (which means the task is still 'to do'), or a cross 'X' (which means the task is done).
 
 ### Permanently removing an item
-
 ```
 $ todo delete 2
 Dance with the Devil
@@ -49,3 +42,31 @@ $ todo
 Takes an item ID, confirm the deletion, and then does it. Notice that the ID of the remaining tasks are *not* changed. That's because a task ID does not reflect the order in which the tasks are displayed, nor does it reflect in some way the total number of tasks still in the databse. The ID is only there to make referencing a specific task easier.
 
 ## Structure
+
+I tried to do this as simple as possible. This program uses a 'database', which is simply a directory somewhere on your system. It defaults to `$HOME/.todo` if neither `TODO_DB` or `XDG_DATA_DIR` variables are set in the environment. A todo item is a subdirectory of the database that contains files associated with it, such as its title and whether or not it's marked as done. In order to easily reference items when issuing commands like `delete` or `toggle`, each item is given an ID when it's created. IDs are tracked using the 'id' file in the database directory. This ID is also the name of the todo item's directory.
+
+A tree command is worth a thousand words. Example:
+```
+$ todo a 'Do hot yoga'
+42
+$ todo a "Change time to match Moscow's"
+43
+$ echo 127 > $YOUR_TODO_DB_PATH/id
+$ todo a 'Buy bus tickets to Burning Man'
+128
+$ todo t 42
+$ tree $YOUR_TODO_DB_PATH
+/YOUR/TODO/DB/PATH
+├── 42
+│   ├── done
+│   └── title
+├── 43
+│   └── title
+├── 128
+│   └── title
+└── id
+```
+
+The 'done' file you can see in this example is simply a marker, i.e., it contains nothing. Also, you can see that each item's directory is named after this item's ID.
+
+All right, now go get stuff done.
