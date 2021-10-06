@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # This script uses files stored in a 'database' (a simple directory). Each file
 # represents a todo item. The content of each file is data associated with the
@@ -33,7 +33,8 @@ go_ls() {
 }
 
 go_add() {
-  echo $@
+  read -p 'Title: ' -e title
+  echo $title
 }
 
 go_toggle() {
