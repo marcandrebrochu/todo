@@ -55,6 +55,10 @@ $ echo 127 > $YOUR_TODO_DB_PATH/id
 $ todo a 'Buy bus tickets to Burning Man'
 128
 $ todo t 1
+$ todo
+1X     Do hot yoga
+128.   Buy bus tickets to Burning Man
+2.     Change time to match Moscow's
 $ tree $YOUR_TODO_DB_PATH
 /YOUR/TODO/DB/PATH
 ├── 1
