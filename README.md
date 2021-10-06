@@ -41,7 +41,7 @@ $ todo
 
 Takes an item ID, confirm the deletion, and then does it. Notice that the ID of the remaining tasks are *not* changed. That's because a task ID does not reflect the order in which the tasks are displayed, nor does it reflect in some way the total number of tasks still in the databse. The ID is only there to make referencing a specific task easier.
 
-### The nuclear command
+### The nuclear option
 ```
 $ todo nuke
 nuke EVERYTHING by removing /PATH/TO/YOUR/TODO/DB? [y/N] y
