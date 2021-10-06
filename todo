@@ -13,11 +13,11 @@
 # <name>
 
 # By order of priority, the path to the database is set to $TODO_DB, then to a
-# subdir of $XDG_CONFIG_HOME, or if neither of these vars are set, $HOME/.todo
+# subdir of $XDG_DATA_HOME, or if neither of these vars are set, $HOME/.todo
 if [ $TODO_DB ]; then
   db="$TODO_DB"
-elif [ $XDG_CONFIG_HOME ]; then
-  db="$XDG_CONFIG_HOME/todo"
+elif [ $XDG_DATA_HOME ]; then
+  db="$XDG_DATA_HOME/todo"
 else
   db="$HOME/.todo"
 fi
