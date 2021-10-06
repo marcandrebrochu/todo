@@ -104,11 +104,24 @@ go_delete() {
   fi
   item_title=$(cat "$item_path/title")
   echo "$item_title"
-  while [ "$confirm" != 'y' ] || [ "$confirm" != 'n' ]; do
+  while true; do
     read -p 'remove? [y/N] ' confirm
     case "$confirm" in
       [Yy])
         rm -fr "$item_path"
+        break;;
+      [Nn]|'') exit 0;;
+    esac
+  done
+}
+
+# Just absolutely nuke the database, after a user confirmation.
+go_nuke() {
+  while true; do
+    read -p "nuke EVERYTHING by removing $db? [y/N] " confirm
+    case "$confirm" in
+      [Yy])
+        rm -fr "$db" # ciao
         break;;
       [Nn]|'') exit 0;;
     esac
@@ -131,8 +144,11 @@ case $1 in
   d*)
     shift
     go_delete $@;;
+  n*)
+    shift
+    go_nuke $@;;
   -h|--help)
-    echo "usage: $0 [ls|add|toggle|delete]"
+    echo "usage: $0 [ls|add|toggle|delete|nuke]"
     echo "       $0 -h|--help"
     echo "       $0 -r|--reset-id"
     exit 1;;
