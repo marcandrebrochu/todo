@@ -1,3 +1,75 @@
 #!/bin/sh
 
-echo 'Hello'
+# This script uses files stored in a 'database' (a simple directory). Each file
+# represents a todo item. The content of each file is data associated with the
+# todo item (for instance the state of the item, a deadline, etc).
+#
+# The filename of a todo item is irrelevant, the only requirement is that it
+# must be unique amongst all other files in the database. This means the title
+# of the task is stored in the file, easily dealing with titles containing
+# spaces and basically any unicode code point.
+#
+# The contents of each item is as follows:
+# <name>
+
+# By order of priority, the path to the database is set to $TODO_DB, then to a
+# subdir of $XDG_CONFIG_HOME, or if neither of these vars are set, $HOME/.todo
+if [ $TODO_DB ]; then
+  db="$TODO_DB"
+elif [ $XDG_CONFIG_HOME ]; then
+  db="$XDG_CONFIG_HOME/todo"
+else
+  db="$HOME/.todo"
+fi
+
+mkdir -p "$db"
+
+go_ls() {
+  for item in $(ls "$db"); do
+    path="$db/$item"
+    content=$(cat "$path")
+    echo $content
+  done
+}
+
+go_add() {
+  echo $@
+}
+
+go_toggle() {
+  echo $@
+}
+
+go_delete() {
+  echo $@
+}
+
+# The first command-line argument should be one of: ls, add, toggle, delete
+# Only the first letter of each argument is checked. If no such arguments are
+# given, assume 'ls' to list all tasks.
+case $1 in
+  l*)
+    shift
+    go_ls $@
+    ;;
+  a*)
+    shift
+    go_add $@
+    ;;
+  t*)
+    shift
+    go_toggle $@
+    ;;
+  d*)
+    shift
+    go_delete $@
+    ;;
+  -h|--help)
+    echo "usage: $0 [ls|add|toggle|delete]"
+    echo "       $0 -h|--help"
+    exit 1
+    ;;
+  *)
+    go_ls $@
+    ;;
+esac
