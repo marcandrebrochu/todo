@@ -5,7 +5,6 @@ This repository contains a simple shell script for dealing with todo items direc
 After linking or copying or whatever you want the script somewhere that is accessible from your `$PATH`, you can start using it as such.
 
 ### Adding a new item
-
 ```
 $ todo add 'Cook the spaghetti'
 1
@@ -13,9 +12,7 @@ $ todo a 'Dance with the Devil'
 2
 ```
 
-As you can see, this invocation prints on standard output the ID of the item you just created. This is explained in more details in the next section.
-
-Note that the script only reads the first letter of each command (`add`, `toggle`, etc), so this is equivalent to the above example:
+As you can see, this invocation prints on standard output the ID of the item you just created. This is explained in more details in the next section. **Note that the script only reads the first letter of each command (`add`, `toggle`, etc.)**
 
 ```
 $ todo a 'Cook the spaghetti'
