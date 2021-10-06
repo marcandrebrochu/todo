@@ -1,4 +1,4 @@
-This repository contains a simple shell script for dealing with todo items directly from the command line. No fancy GUI or text-based interface, just simple invocations for getting that get the job done (and marking it as such!)
+This repository contains a simple shell script for dealing with todo items directly from the command line. No fancy GUI or text-based interface, just simple invocations that get the job done!
 
 ## Usage
 
