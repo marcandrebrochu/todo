@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # This script uses files stored in a 'database' (a simple directory). Each file
 # represents a todo item. The content of each file is data associated with the
@@ -21,28 +21,91 @@ elif [ $XDG_DATA_HOME ]; then
 else
   db="$HOME/.todo"
 fi
+idfile="$db/id"
 
+# If they do not exist, create the database directory and the ID file.
 mkdir -p "$db"
+if [ ! -f "$idfile" ]; then
+  echo 0 > "$idfile"
+fi
+
+get_new_id() {
+  current_id=$(cat $idfile)
+  new_id=$(expr $current_id + 1)
+  echo $new_id > "$idfile"
+  return $new_id
+}
 
 go_ls() {
   for item in $(ls "$db"); do
-    path="$db/$item"
-    content=$(cat "$path")
-    echo $content
+    item_path="$db/$item"
+    if [ "$item_path" = "$idfile" ]; then
+      continue
+    fi
+    if [ -f "$item_path/done" ]; then
+      item_state="X"
+    else
+      item_state="."
+    fi
+    item_title=$(cat "$item_path/title")
+    printf '%s%s\t%s\n' $item "$item_state" "$item_title"
   done
 }
 
 go_add() {
-  read -p 'Title: ' -e title
-  echo $title
+  item_name="$1"
+  if [ -z "$item_name" ]; then
+    echo "usage: $0 add name"
+    exit 1
+  fi
+  get_new_id
+  item_id=$?
+  item_path="$db/$item_id"
+  mkdir "$item_path"
+  echo "$item_name" > "$item_path/title"
+  echo $item_id
 }
 
 go_toggle() {
-  echo $@
+  item_id=$1
+  if [ -z $item_id ]; then
+    echo "usage: $0 toggle id"
+    exit 1
+  fi
+  item_path="$db/$item_id"
+  if [ ! -d "$item_path" ]; then
+    echo "item does not exist!"
+    exit 2
+  fi
+  if [ ! -f "$item_path/done" ]; then
+    touch "$item_path/done"
+  else
+    rm "$item_path/done"
+  fi
 }
 
 go_delete() {
-  echo $@
+  item_id=$1
+  if [ -z $item_id ]; then
+    echo "usage: $0 delete id"
+    exit 1
+  fi
+  item_path="$db/$item_id"
+  if [ ! -d "$item_path" ]; then
+    echo "item does not exist!"
+    exit 2
+  fi
+  item_title=$(cat "$item_path/title")
+  echo "$item_title"
+  while [ "$confirm" != 'y' ] || [ "$confirm" != 'n' ]; do
+    read -p 'remove? [y/N] ' confirm
+    case "$confirm" in
+      [Yy])
+        rm -fr "$item_path"
+        break;;
+      [Nn]|'') exit 0;;
+    esac
+  done
 }
 
 # The first command-line argument should be one of: ls, add, toggle, delete
@@ -51,26 +114,24 @@ go_delete() {
 case $1 in
   l*)
     shift
-    go_ls $@
-    ;;
+    go_ls $@;;
   a*)
     shift
-    go_add $@
-    ;;
+    go_add "$@";;
   t*)
     shift
-    go_toggle $@
-    ;;
+    go_toggle $@;;
   d*)
     shift
-    go_delete $@
-    ;;
+    go_delete $@;;
   -h|--help)
     echo "usage: $0 [ls|add|toggle|delete]"
     echo "       $0 -h|--help"
-    exit 1
+    echo "       $0 -r|--reset-id"
+    exit 1;;
+  -r|--reset-id)
+    echo 0 > "$idfile"
     ;;
   *)
-    go_ls $@
-    ;;
+    go_ls $@;;
 esac
