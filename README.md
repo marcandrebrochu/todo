@@ -41,6 +41,15 @@ $ todo
 
 Takes an item ID, confirm the deletion, and then does it. Notice that the ID of the remaining tasks are *not* changed. That's because a task ID does not reflect the order in which the tasks are displayed, nor does it reflect in some way the total number of tasks still in the databse. The ID is only there to make referencing a specific task easier.
 
+### The nuclear command
+```
+$ todo nuke
+nuke EVERYTHING by removing /PATH/TO/YOUR/TODO/DB? [y/N] y
+$
+```
+
+This will completely delete all of your todo items and reset the ID counter by deleting the database. Be careful not to set `TODO_DB` to your filesystem's root (I'm joking... I think).
+
 ## Structure
 
 I tried to do this as simple as possible. This program uses a 'database', which is simply a directory somewhere on your system. It defaults to `$HOME/.todo` if neither `TODO_DB` or `XDG_DATA_DIR` variables are set in the environment. A todo item is a subdirectory of the database that contains files associated with it, such as its title and whether or not it's marked as done. In order to easily reference items when issuing commands like `delete` or `toggle`, each item is given an ID when it's created. IDs are tracked using the 'id' file in the database directory. This ID is also the name of the todo item's directory.
