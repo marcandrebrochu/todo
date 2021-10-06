@@ -47,7 +47,7 @@ I tried to do this as simple as possible. This program uses a 'database', which 
 
 A tree command is worth a thousand words. Here's a complete usage example:
 ```
-$ rm -fr $YOUR_TODO_DB_PATH
+$ rm -fr $YOUR_TODO_DB_PATH # start fresh for this example
 $ todo a 'Do hot yoga'
 1
 $ todo a "Change time to match Moscow's" 1>/dev/null
