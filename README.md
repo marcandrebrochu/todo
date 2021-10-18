@@ -41,6 +41,13 @@ $ todo
 
 Takes an item ID, confirm the deletion, and then does it. Notice that the ID of the remaining tasks are *not* changed. That's because a task ID does not reflect the order in which the tasks are displayed, nor does it reflect in some way the total number of tasks still in the databse. The ID is only there to make referencing a specific task easier.
 
+### Cleaning up
+```
+$ todo clean
+```
+
+Removes all items that are marked as done. In contrast to other commands that use `rm`, there's no interactive user confirmation with this one, so be careful.
+
 ### The nuclear option
 ```
 $ todo nuke
