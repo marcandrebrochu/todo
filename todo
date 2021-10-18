@@ -89,6 +89,19 @@ go_toggle() {
   fi
 }
 
+# Deletes all completed items. Takes no arguments.
+go_clean() {
+  for item in $(ls "$db"); do
+    item_path="$db/$item"
+    if [ "$item_path" = "$idfile" ]; then
+      continue
+    fi
+    if [ -f "$item_path/done" ]; then
+      rm -fr "$item_path"
+    fi
+  done
+}
+
 # Deletes, after user confirmation, a given todo item. Takes a single argument,
 # the ID of the item to remove.
 go_delete() {
@@ -128,7 +141,9 @@ go_nuke() {
   done
 }
 
-# The first command-line argument should be one of: ls, add, toggle, delete
+# The first command-line argument should be one of: ls, add, toggle, delete,
+# nuke, clean.
+#
 # Only the first letter of each argument is checked. If no such arguments are
 # given, assume 'ls' to list all tasks.
 case $1 in
@@ -144,11 +159,14 @@ case $1 in
   d*)
     shift
     go_delete $@;;
+  c*)
+    shift
+    go_clean $@;;
   n*)
     shift
     go_nuke $@;;
   -h|--help)
-    echo "usage: $0 [ls|add|toggle|delete|nuke]"
+    echo "usage: $0 [ls|add|toggle|delete|clean|nuke]"
     echo "       $0 -h|--help"
     echo "       $0 -r|--reset-id"
     exit 1;;
